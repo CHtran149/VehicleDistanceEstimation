@@ -4,6 +4,10 @@ project(VehicleDistanceEstimation)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(
+    ONNXRUNTIME_ROOT
+    /home/chien149/libs/onnxruntime-linux-aarch64-1.19.2
+)
 
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -14,17 +18,10 @@ pkg_check_modules(
     libcamera
 )
 
-pkg_check_modules(
-    ONNXRUNTIME
-    REQUIRED
-    libonnxruntime
-)
-
 include_directories(
     include
     ${OpenCV_INCLUDE_DIRS}
     ${LIBCAMERA_INCLUDE_DIRS}
-    ${ONNXRUNTIME_INCLUDE_DIRS}
 )
 
 add_executable(
@@ -52,11 +49,19 @@ add_executable(
     src/test_libcamera_raw_capture.cpp
 )
 
+add_executable(
+    test_onnxruntime
+    src/test_onnxruntime.cpp
+)
+
 target_link_libraries(
     VehicleDistanceEstimation
+
     ${OpenCV_LIBS}
+
     ${LIBCAMERA_LIBRARIES}
-    ${ONNXRUNTIME_LIBRARIES}
+
+    ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
 )
 
 target_link_libraries(
@@ -72,4 +77,21 @@ target_link_libraries(
 
     ${LIBCAMERA_LIBRARIES}
     ${OpenCV_LIBS}
+)
+
+target_link_libraries(
+    test_onnxruntime
+    ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
+)
+
+target_include_directories(
+    test_onnxruntime
+    PRIVATE
+    ${ONNXRUNTIME_ROOT}/include
+)
+
+target_include_directories(
+    VehicleDistanceEstimation
+    PRIVATE
+    ${ONNXRUNTIME_ROOT}/include
 )
