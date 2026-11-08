@@ -11,6 +11,9 @@ YOLOWorker::YOLOWorker(
     detection_queue_(detection_queue),
     running_(false)
 {
+    detector_.initialize(
+        "models/yolov8n.onnx"
+    );
 }
 
 YOLOWorker::~YOLOWorker()
@@ -50,6 +53,9 @@ void YOLOWorker::workerLoop()
 
         result.frame =
             frame.clone();
+
+        result.detections =
+            detector_.detect(frame);
 
         detection_queue_.push(
             result

@@ -2,6 +2,7 @@
 
 #include "frame_queue.hpp"
 #include "detection_queue.hpp"
+#include "yolo_detector.hpp"
 
 #include <thread>
 #include <atomic>
@@ -28,6 +29,8 @@ private:
 private:
 
     FrameQueue& frame_queue_;
+
+    YOLODetector detector_;
 
     DetectionQueue& detection_queue_;
 

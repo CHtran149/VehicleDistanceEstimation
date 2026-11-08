@@ -14,21 +14,32 @@ pkg_check_modules(
     libcamera
 )
 
+pkg_check_modules(
+    ONNXRUNTIME
+    REQUIRED
+    libonnxruntime
+)
+
 include_directories(
     include
     ${OpenCV_INCLUDE_DIRS}
     ${LIBCAMERA_INCLUDE_DIRS}
+    ${ONNXRUNTIME_INCLUDE_DIRS}
 )
 
 add_executable(
     VehicleDistanceEstimation
     
     src/main.cpp
-    src/camera.cpp
     src/fps_counter.cpp
+
     src/frame_queue.cpp
+    src/camera.cpp
+    
     src/detection_queue.cpp
+
     src/yolo_worker.cpp
+    src/yolo_detector.cpp
 )
 
 add_executable(
@@ -45,6 +56,7 @@ target_link_libraries(
     VehicleDistanceEstimation
     ${OpenCV_LIBS}
     ${LIBCAMERA_LIBRARIES}
+    ${ONNXRUNTIME_LIBRARIES}
 )
 
 target_link_libraries(

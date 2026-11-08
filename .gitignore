@@ -6,10 +6,13 @@ build/
 
 .vscode/
 .idea/
+models/
 
 *.o
 *.so
 *.a
+*.onnx
+*.log
 
 __pycache__/
 
