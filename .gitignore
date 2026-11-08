@@ -1,0 +1,16 @@
+build/
+
+*.jpg
+*.png
+*.jpeg
+
+.vscode/
+.idea/
+
+*.o
+*.so
+*.a
+
+__pycache__/
+
+compile_commands.json
