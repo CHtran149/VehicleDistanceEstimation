@@ -22,10 +22,13 @@ include_directories(
 
 add_executable(
     VehicleDistanceEstimation
+    
     src/main.cpp
     src/camera.cpp
     src/fps_counter.cpp
     src/frame_queue.cpp
+    src/detection_queue.cpp
+    src/yolo_worker.cpp
 )
 
 add_executable(

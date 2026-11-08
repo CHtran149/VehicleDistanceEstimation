@@ -1,16 +1,24 @@
 #include "camera.hpp"
 #include "frame_queue.hpp"
 
-#include <opencv2/opencv.hpp>
+#include "detection.hpp"
+#include "detection_queue.hpp"
+#include "yolo_worker.hpp"
 
 #include <iostream>
-#include <string>
 
 int main()
 {
     FrameQueue frame_queue(5);
 
+    DetectionQueue detection_queue(5);
+
     Camera camera(frame_queue);
+
+    YOLOWorker yolo_worker(
+        frame_queue,
+        detection_queue
+    );
 
     if(!camera.initialize())
     {
@@ -30,45 +38,31 @@ int main()
         return -1;
     }
 
-    uint64_t frame_count = 0;
+    yolo_worker.start();
+
+    uint64_t result_count = 0;
 
     while(true)
     {
-        cv::Mat frame =
-            frame_queue.pop();
+        DetectionResult result =
+            detection_queue.pop();
 
-        frame_count++;
+        result_count++;
 
-        if(frame_count % 30 == 0)
+        if(result_count % 30 == 0)
         {
             std::cout
-                << "[Consumer] "
-                << frame.cols
+                << "[Main] DetectionResult "
+                << result.frame.cols
                 << "x"
-                << frame.rows
-                << " frame="
-                << frame_count
-                << std::endl;
-        }
-
-        if(frame_count % 100 == 0)
-        {
-            std::string filename =
-                "frame_" +
-                std::to_string(frame_count) +
-                ".jpg";
-
-            cv::imwrite(
-                filename,
-                frame
-            );
-
-            std::cout
-                << "Saved "
-                << filename
+                << result.frame.rows
+                << " count="
+                << result_count
                 << std::endl;
         }
     }
+
+    yolo_worker.stop();
 
     camera.stop();
 
