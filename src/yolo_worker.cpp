@@ -12,7 +12,7 @@ YOLOWorker::YOLOWorker(
     running_(false)
 {
     detector_.initialize(
-        "models/yolov8n.onnx"
+        "../models/yolov8n.onnx"
     );
 }
 
@@ -48,7 +48,7 @@ void YOLOWorker::workerLoop()
     {
         cv::Mat frame =
             frame_queue_.pop();
-
+                        
         DetectionResult result;
 
         result.frame =

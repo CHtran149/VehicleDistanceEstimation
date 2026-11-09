@@ -6,9 +6,20 @@
 #include "yolo_worker.hpp"
 
 #include <iostream>
+#include <atomic>
+#include <csignal>
+
+std::atomic<bool> g_running(true);
+
+void signalHandler(int)
+{
+    g_running = false;
+}
 
 int main()
 {
+    signal(SIGINT, signalHandler);
+
     FrameQueue frame_queue(5);
 
     DetectionQueue detection_queue(5);
@@ -42,7 +53,7 @@ int main()
 
     uint64_t result_count = 0;
 
-    while(true)
+    while(g_running)
     {
         DetectionResult result =
             detection_queue.pop();
@@ -52,13 +63,24 @@ int main()
         if(result_count % 30 == 0)
         {
             std::cout
-                << "[Main] DetectionResult "
-                << result.frame.cols
-                << "x"
-                << result.frame.rows
-                << " count="
+                << "\nFrame "
                 << result_count
                 << std::endl;
+
+            std::cout
+                << "Detections: "
+                << result.detections.size()
+                << std::endl;
+
+            for(const auto& det : result.detections)
+            {
+                std::cout
+                    << "class="
+                    << det.class_id
+                    << " conf="
+                    << det.confidence
+                    << std::endl;
+            }
         }
     }
 

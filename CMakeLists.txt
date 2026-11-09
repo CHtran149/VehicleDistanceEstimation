@@ -54,6 +54,16 @@ add_executable(
     src/test_onnxruntime.cpp
 )
 
+add_executable(
+    test_yolo_image
+
+    src/test_yolo_image.cpp
+
+    src/yolo_detector.cpp
+)
+
+
+
 target_link_libraries(
     VehicleDistanceEstimation
 
@@ -84,6 +94,12 @@ target_link_libraries(
     ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
 )
 
+target_link_libraries(
+    test_yolo_image
+    ${OpenCV_LIBS}
+    ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
+)
+
 target_include_directories(
     test_onnxruntime
     PRIVATE
@@ -93,5 +109,14 @@ target_include_directories(
 target_include_directories(
     VehicleDistanceEstimation
     PRIVATE
+    ${ONNXRUNTIME_ROOT}/include
+)
+
+target_include_directories(
+    test_yolo_image
+    PRIVATE
+
+    include
+
     ${ONNXRUNTIME_ROOT}/include
 )
