@@ -8,7 +8,7 @@ int main()
 
     if(
         !estimator.initialize(
-            "../models/midas_small.onnx"
+            "../models/midas_v21_small_256_int8.onnx"
         )
     )
     {

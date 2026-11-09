@@ -40,16 +40,6 @@ add_executable(
 )
 
 add_executable(
-    test_libcamera_capture
-    src/test_libcamera_capture.cpp
-)
-
-add_executable(
-    test_libcamera_raw_capture
-    src/test_libcamera_raw_capture.cpp
-)
-
-add_executable(
     test_onnxruntime
     src/test_onnxruntime.cpp
 )
@@ -68,6 +58,23 @@ add_executable(
     src/depth_estimator.cpp
 )
 
+add_executable(
+    test_midas_image
+
+    src/test_midas_image.cpp
+
+    src/depth_estimator.cpp
+)
+
+add_executable(
+    test_yolo_midas_image
+
+    src/test_yolo_midas_image.cpp
+
+    src/yolo_detector.cpp
+    src/depth_estimator.cpp
+)
+
 target_link_libraries(
     VehicleDistanceEstimation
 
@@ -76,21 +83,6 @@ target_link_libraries(
     ${LIBCAMERA_LIBRARIES}
 
     ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
-)
-
-target_link_libraries(
-    test_libcamera_capture
-
-    ${LIBCAMERA_LIBRARIES}
-
-    ${OpenCV_LIBS}
-)
-
-target_link_libraries(
-    test_libcamera_raw_capture
-
-    ${LIBCAMERA_LIBRARIES}
-    ${OpenCV_LIBS}
 )
 
 target_link_libraries(
@@ -106,6 +98,22 @@ target_link_libraries(
 
 target_link_libraries(
     test_midas
+
+    ${OpenCV_LIBS}
+
+    ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
+)
+
+target_link_libraries(
+    test_midas_image
+
+    ${OpenCV_LIBS}
+
+    ${ONNXRUNTIME_ROOT}/lib/libonnxruntime.so
+)
+
+target_link_libraries(
+    test_yolo_midas_image
 
     ${OpenCV_LIBS}
 
@@ -135,6 +143,24 @@ target_include_directories(
 
 target_include_directories(
     test_midas
+    PRIVATE
+
+    include
+
+    ${ONNXRUNTIME_ROOT}/include
+)
+
+target_include_directories(
+    test_midas_image
+    PRIVATE
+
+    include
+
+    ${ONNXRUNTIME_ROOT}/include
+)
+
+target_include_directories(
+    test_yolo_midas_image
     PRIVATE
 
     include

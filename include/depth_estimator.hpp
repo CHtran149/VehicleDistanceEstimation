@@ -7,6 +7,9 @@
 #include <array>
 #include <memory>
 #include <string>
+#include <vector>
+#include <algorithm>
+#include <cmath>
 
 class DepthEstimator
 {
@@ -22,11 +25,24 @@ public:
         const cv::Mat& frame
     );
 
+    float estimateDepth(
+        const cv::Mat& depth_map,
+        const cv::Rect& bbox
+    );
+
 private:
 
-    cv::Mat preprocess(
+    std::vector<float> preprocess(
         const cv::Mat& frame
     );
+
+private:
+
+    static constexpr int INPUT_WIDTH =
+        256;
+
+    static constexpr int INPUT_HEIGHT =
+        256;
 
 private:
 

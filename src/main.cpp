@@ -79,6 +79,8 @@ int main()
                     << det.class_id
                     << " conf="
                     << det.confidence
+                    << " depth="
+                    << det.depth
                     << std::endl;
             }
         }

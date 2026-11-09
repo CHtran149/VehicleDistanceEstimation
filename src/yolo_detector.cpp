@@ -337,6 +337,9 @@ YOLODetector::detect(
         det.bbox =
             boxes[idx];
 
+        det.depth =
+            0.0f;
+
         detections.push_back(
             det
         );

@@ -11,6 +11,8 @@ struct Detection
     float confidence;
 
     cv::Rect bbox;
+    
+    float depth;
 };
 
 struct DetectionResult
