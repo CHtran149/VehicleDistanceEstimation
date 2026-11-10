@@ -1,5 +1,6 @@
 #include "yolo_detector.hpp"
 #include "depth_estimator.hpp"
+#include "distance_estimator.hpp"
 
 #include <opencv2/opencv.hpp>
 
@@ -111,7 +112,15 @@ int main()
                 depth_map,
                 depth_bbox
             );
+        
+        DistanceEstimator
+            distance_estimator;
 
+        det.distance_m =
+            distance_estimator.estimate(
+                det.depth
+            );
+        
         std::cout
             << "class="
             << det.class_id
@@ -119,6 +128,9 @@ int main()
             << det.confidence
             << " depth="
             << det.depth
+            << " distance="
+            << det.distance_m
+            << " m"
             << std::endl;
 
         cv::rectangle(

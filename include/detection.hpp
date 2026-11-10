@@ -13,6 +13,8 @@ struct Detection
     cv::Rect bbox;
     
     float depth;
+    
+    float distance_m;
 };
 
 struct DetectionResult

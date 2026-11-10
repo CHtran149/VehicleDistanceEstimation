@@ -28,8 +28,8 @@ add_executable(
     VehicleDistanceEstimation
     
     src/main.cpp
-    src/fps_counter.cpp
 
+    src/fps_counter.cpp
     src/frame_queue.cpp
     src/camera.cpp
     
@@ -37,6 +37,9 @@ add_executable(
 
     src/yolo_worker.cpp
     src/yolo_detector.cpp
+
+    src/depth_estimator.cpp
+    src/distance_estimator.cpp
 )
 
 add_executable(
@@ -73,6 +76,7 @@ add_executable(
 
     src/yolo_detector.cpp
     src/depth_estimator.cpp
+    src/distance_estimator.cpp
 )
 
 target_link_libraries(
