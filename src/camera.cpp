@@ -138,11 +138,23 @@ bool Camera::start()
 
 void Camera::stop()
 {
+    if(!running_)
+    {
+        return;
+    }
+
     running_ = false;
 
     if(camera_)
     {
+        camera_->requestCompleted
+            .disconnect(
+                this,
+                &Camera::requestComplete
+            );
+
         camera_->stop();
+
         camera_->release();
     }
 
@@ -150,6 +162,10 @@ void Camera::stop()
     {
         camera_manager_->stop();
     }
+
+    std::cout
+        << "Camera stopped"
+        << std::endl;
 }
 
 void Camera::requestComplete(
@@ -240,10 +256,20 @@ void Camera::requestComplete(
             << std::endl;
     }
 
+    if(!running_)
+    {
+        return;
+    }
+
     request->reuse(
         libcamera::Request::ReuseBuffers
     );
 
+    if(!running_)
+    {
+        return;
+    }
+    
     if(camera_->queueRequest(request))
     {
         std::cerr

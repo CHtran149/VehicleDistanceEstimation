@@ -1,21 +1,30 @@
-#pragma once
+#include "distance_estimator.hpp"
 
-class DistanceEstimator
+#include <cmath>
+
+DistanceEstimator::DistanceEstimator(
+    float a,
+    float b
+)
+    :
+    a_(a),
+    b_(b)
 {
-public:
+}
 
-    DistanceEstimator(
-        float a = 4506.5111f,
-        float b = -1.1380f
-    );
+float DistanceEstimator::estimate(
+    float depth
+) const
+{
+    if(depth <= 0.0f)
+    {
+        return 0.0f;
+    }
 
-    float estimate(
-        float depth
-    ) const;
-
-private:
-
-    float a_;
-
-    float b_;
-};
+    return
+        a_ *
+        std::pow(
+            depth,
+            b_
+        );
+}

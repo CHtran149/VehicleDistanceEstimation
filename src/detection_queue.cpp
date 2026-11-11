@@ -4,7 +4,8 @@ DetectionQueue::DetectionQueue(
     size_t max_size
 )
     :
-    max_size_(max_size)
+    max_size_(max_size),
+    stopped_(false)
 {
 }
 
@@ -15,6 +16,11 @@ void DetectionQueue::push(
     std::unique_lock<std::mutex>
         lock(mutex_);
 
+    if(stopped_)
+    {
+        return;
+    }
+
     if(queue_.size() >= max_size_)
     {
         queue_.pop();
@@ -22,7 +28,9 @@ void DetectionQueue::push(
 
     queue_.push(result);
 
-    condition_.notify_one();
+    lock.unlock();
+
+    cv_.notify_one();
 }
 
 DetectionResult DetectionQueue::pop()
@@ -30,12 +38,25 @@ DetectionResult DetectionQueue::pop()
     std::unique_lock<std::mutex>
         lock(mutex_);
 
-    condition_.wait(
+    cv_.wait(
         lock,
         [this]
         {
-            return !queue_.empty();
-        });
+            return
+                !queue_.empty()
+                ||
+                stopped_;
+        }
+    );
+
+    if(
+        stopped_
+        &&
+        queue_.empty()
+    )
+    {
+        return DetectionResult{};
+    }
 
     DetectionResult result =
         queue_.front();
@@ -45,10 +66,14 @@ DetectionResult DetectionQueue::pop()
     return result;
 }
 
-size_t DetectionQueue::size()
+void DetectionQueue::stop()
 {
-    std::lock_guard<std::mutex>
-        lock(mutex_);
+    {
+        std::lock_guard<std::mutex>
+            lock(mutex_);
 
-    return queue_.size();
+        stopped_ = true;
+    }
+
+    cv_.notify_all();
 }

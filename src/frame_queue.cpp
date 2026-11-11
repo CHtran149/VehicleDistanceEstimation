@@ -11,31 +11,55 @@ void FrameQueue::push(
     const cv::Mat& frame
 )
 {
-    std::unique_lock<std::mutex> lock(mutex_);
+    std::unique_lock<std::mutex>
+        lock(mutex_);
+
+    if(stopped_)
+    {
+        return;
+    }
 
     if(queue_.size() >= max_size_)
     {
         queue_.pop();
     }
 
-    queue_.push(frame.clone());
+    queue_.push(
+        frame.clone()
+    );
 
-    condition_.notify_one();
+    lock.unlock();
+
+    cv_.notify_one();
 }
 
 cv::Mat FrameQueue::pop()
 {
-    std::unique_lock<std::mutex> lock(mutex_);
+    std::unique_lock<std::mutex>
+        lock(mutex_);
 
-    condition_.wait(
+    cv_.wait(
         lock,
         [this]
         {
-            return !queue_.empty();
+            return
+                !queue_.empty()
+                ||
+                stopped_;
         }
     );
 
-    cv::Mat frame = queue_.front();
+    if(
+        stopped_
+        &&
+        queue_.empty()
+    )
+    {
+        return cv::Mat();
+    }
+
+    cv::Mat frame =
+        queue_.front();
 
     queue_.pop();
 
@@ -64,4 +88,16 @@ void FrameQueue::clear()
     {
         queue_.pop();
     }
+}
+
+void FrameQueue::stop()
+{
+    {
+        std::lock_guard<std::mutex>
+            lock(mutex_);
+
+        stopped_ = true;
+    }
+
+    cv_.notify_all();
 }

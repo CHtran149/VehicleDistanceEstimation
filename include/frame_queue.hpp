@@ -22,13 +22,17 @@ public:
     
     void clear();
 
+    void stop();
+
 private:
 
     std::queue<cv::Mat> queue_;
 
     std::mutex mutex_;
 
-    std::condition_variable condition_;
+    std::condition_variable cv_;
 
     size_t max_size_;
+
+    bool stopped_;
 };

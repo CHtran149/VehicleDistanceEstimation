@@ -6,12 +6,13 @@
 #include <mutex>
 #include <condition_variable>
 
+
 class DetectionQueue
 {
 public:
 
     explicit DetectionQueue(
-        size_t max_size = 5
+        size_t max_size
     );
 
     void push(
@@ -20,15 +21,22 @@ public:
 
     DetectionResult pop();
 
-    size_t size();
+    void stop();
 
 private:
 
-    std::queue<DetectionResult> queue_;
+    std::queue<DetectionResult>
+        queue_;
 
-    std::mutex mutex_;
+    std::mutex
+        mutex_;
 
-    std::condition_variable condition_;
+    std::condition_variable
+        cv_;
 
-    size_t max_size_;
+    size_t
+        max_size_;
+
+    bool
+        stopped_;
 };

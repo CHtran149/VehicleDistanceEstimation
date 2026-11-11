@@ -2,10 +2,13 @@
 
 #include "frame_queue.hpp"
 #include "detection_queue.hpp"
-#include "yolo_detector.hpp"
 
-#include <thread>
+#include "yolo_detector.hpp"
+#include "depth_estimator.hpp"
+#include "distance_estimator.hpp"
+
 #include <atomic>
+#include <thread>
 
 class YOLOWorker
 {
@@ -30,11 +33,16 @@ private:
 
     FrameQueue& frame_queue_;
 
-    YOLODetector detector_;
-
     DetectionQueue& detection_queue_;
 
-    std::thread thread_;
+    YOLODetector detector_;
 
-    std::atomic<bool> running_;
+    DepthEstimator depth_estimator_;
+
+    DistanceEstimator distance_estimator_;
+
+    std::atomic<bool>
+        running_;
+
+    std::thread worker_thread_;
 };

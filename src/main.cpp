@@ -51,44 +51,42 @@ int main()
 
     yolo_worker.start();
 
-    uint64_t result_count = 0;
-
     while(g_running)
     {
         DetectionResult result =
             detection_queue.pop();
 
-        result_count++;
+        if(
+            !g_running &&
+            result.frame.empty()
+        )
+        {
+            break;
+        }
 
-        if(result_count % 30 == 0)
+        for(const auto& det : result.detections)
         {
             std::cout
-                << "\nFrame "
-                << result_count
+                << "class="
+                << det.class_id
+                << " conf="
+                << det.confidence
+                << " depth="
+                << det.depth
+                << " distance="
+                << det.distance_m
+                << " m"
                 << std::endl;
-
-            std::cout
-                << "Detections: "
-                << result.detections.size()
-                << std::endl;
-
-            for(const auto& det : result.detections)
-            {
-                std::cout
-                    << "class="
-                    << det.class_id
-                    << " conf="
-                    << det.confidence
-                    << " depth="
-                    << det.depth
-                    << std::endl;
-            }
         }
     }
 
-    yolo_worker.stop();
-
     camera.stop();
+
+    frame_queue.stop();
+
+    detection_queue.stop();
+
+    yolo_worker.stop();
 
     return 0;
 }
